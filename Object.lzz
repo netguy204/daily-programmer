@@ -1,0 +1,13 @@
+class Object : public gc {
+private:
+  int m_a;
+
+public:
+  void setA(int a) {
+    m_a = a;
+  }
+
+  int getA() {
+    return m_a;
+  }
+};
