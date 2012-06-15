@@ -6,7 +6,7 @@ GENERATED_C = $(patsubst %.lzz,%.cpp,$(SOURCES))
 GENERATED_H = $(patsubst %.lzz,%.h,$(SOURCES)) predeclares.h common_gen.h
 HEADERS = $(GENERATED_H) $(STANDALONE_HEADERS)
 
-CFLAGS+=-Igc-7.2/include -I/usr/include
+CXXFLAGS+=-Igc-7.2/include -I/usr/include
 
 LZZHOME = lzz_2_8_2_src_gen
 LZZ     = build_tools/lzz
@@ -40,14 +40,14 @@ common_gen.h: common.h predeclares.h
 
 %.cpp %.h : %.lzz $(LZZ) common_gen.h
 	@echo "Preprocessing $<" ;\
-	$(LZZ) $< $(CFLAGS) -hd -sd -hl -sl ;\
+	$(LZZ) $< $(CXXFLAGS) -hd -sd -hl -sl ;\
 	$(PREPEND) $(patsubst %.lzz,%.h,$<) "#include \"common_gen.h\"\n"
 
 %.o : %.cpp
-	g++ -c $< $(CFLAGS)
+	$(CXX) -c $< $(CXXFLAGS)
 
 app: $(OBJECTS) main.cpp libgc.a
-	g++ -o $@ main.cpp $(OBJECTS) libgc.a $(CFLAGS)
+	$(CXX) -o $@ main.cpp $(CXXFLAGS) $(OBJECTS) libgc.a
 
 clean:
 	rm -f app *.o $(GENERATED_C) $(GENERATED_H) $(LZZ) libgc.a
