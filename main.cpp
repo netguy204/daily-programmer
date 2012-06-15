@@ -1,6 +1,7 @@
-#include <iostream>
-
+#include "common.h"
 #include "Object.h"
+
+#include <iostream>
 
 using namespace std;
 
