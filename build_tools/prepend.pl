@@ -5,13 +5,15 @@ use strict;
 
 use File::Slurp;
 
-if (@ARGV != 2) {
-    die "usage: prepend.pl filename string";
+if (@ARGV < 2) {
+    die "usage: prepend.pl filename string [strings*]";
 }
 
 
 my $filename = $ARGV[0];
-my $prefix = $ARGV[1];
+
+shift @ARGV;
+my $prefix = join("\n", @ARGV) . "\n";
 
 write_file( $filename, $prefix, (-e $filename)?read_file( $filename ):undef );
 

@@ -3,7 +3,10 @@
 
 #include <gc_cpp.h>
 #include <gc.h>
+
 #include <string>
 #include <map>
+#include <stdexcept>
+#include <string>
 
 #endif

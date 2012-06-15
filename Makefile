@@ -13,6 +13,7 @@ LZZ     = build_tools/lzz
 PREPEND = build_tools/prepend.pl
 PREDECL = build_tools/predeclares.pl
 REPLDIF = build_tools/replace_if_different.sh
+LZZDEPS = build_tools/lzz_deps.pl
 
 all: app $(GENERATED_H) $(GENERATED_C)
 
@@ -28,6 +29,11 @@ libgc.a: gc-7.2/.libs/libgc.a
 gc-7.2/.libs/libgc.a:
 	cd gc-7.2 ; ./configure --enable-cplusplus --enable-parallel-mark ; make
 
+%.P : %.lzz
+	$(LZZDEPS) $< $@
+
+include $(SOURCES:.lzz=.P)
+
 predeclares.h: $(SOURCES)
 	@echo "Creating predeclares.h" ;\
 	$(PREDECL) > pre_temp.h ;\
@@ -38,10 +44,10 @@ common_gen.h: common.h predeclares.h
 	@echo "Creating common_gen.h" ;\
 	cat common.h predeclares.h > common_gen.h
 
-%.cpp %.h : %.lzz $(LZZ) common_gen.h
+%.cpp %.h : %.lzz common_gen.h $(LZZ)
 	@echo "Preprocessing $<" ;\
-	$(LZZ) $< $(CXXFLAGS) -hd -sd -hl -sl ;\
-	$(PREPEND) $(patsubst %.lzz,%.h,$<) "#include \"common_gen.h\"\n"
+	$(LZZ) $< $(CXXFLAGS) -hd -sd -hl -sl -c -DCOMMON_H ;\
+	$(PREPEND) $(patsubst %.lzz,%.h,$<) '#include "common_gen.h"'
 
 %.o : %.cpp
 	$(CXX) -c $< $(CXXFLAGS)
@@ -50,4 +56,4 @@ app: $(OBJECTS) main.cpp libgc.a
 	$(CXX) -o $@ main.cpp $(CXXFLAGS) $(OBJECTS) libgc.a
 
 clean:
-	rm -f app *.o $(GENERATED_C) $(GENERATED_H) $(LZZ) libgc.a
+	rm -f app *.o $(GENERATED_C) $(GENERATED_H) $(LZZ) libgc.a *.P
