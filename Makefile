@@ -1,12 +1,16 @@
 SOURCES = $(wildcard *.lzz)
 STANDALONE_HEADERS = prim_mem.h
 
-OBJECTS = $(patsubst %.lzz,%.o,$(SOURCES))
+OBJECTS = $(patsubst %.lzz,%.o,$(SOURCES)) $(patsubst %.lzz,%.moc.o,$(SOURCES))
 GENERATED_C = $(patsubst %.lzz,%.cpp,$(SOURCES))
 GENERATED_H = $(patsubst %.lzz,%.h,$(SOURCES)) predeclares.h common_gen.h
+GENERATED_MOC = $(patsubst %.lzz,%.moc.cpp,$(SOURCES))
+
 HEADERS = $(GENERATED_H) $(STANDALONE_HEADERS)
 
-CXXFLAGS+=-Igc-7.2/include -I/usr/include
+LZZFLAGS=-Igc-7.2/include -I/usr/include `pkg-config --cflags QtCore`
+CXXFLAGS+=$(LZZFLAGS) # -g
+LDFLAGS+=`pkg-config --libs QtCore`
 
 LZZHOME = lzz_2_8_2_src_gen
 LZZ     = build_tools/lzz
@@ -14,8 +18,10 @@ PREPEND = build_tools/prepend.pl
 PREDECL = build_tools/predeclares.pl
 REPLDIF = build_tools/replace_if_different.sh
 LZZDEPS = build_tools/lzz_deps.pl
+LZZINLN = build_tools/lzz_inline.pl
+LZZPREP = build_tools/lzz_preproc.pl
 
-all: app $(GENERATED_H) $(GENERATED_C)
+all: app $(GENERATED_H) $(GENERATED_C) $(GENERATED_MOC)
 
 $(LZZ): $(LZZHOME)/lazycpp
 	cp $(LZZHOME)/lazycpp $(LZZ)
@@ -45,15 +51,19 @@ common_gen.h: common.h predeclares.h
 	cat common.h predeclares.h > common_gen.h
 
 %.cpp %.h : %.lzz common_gen.h $(LZZ)
-	@echo "Preprocessing $<" ;\
-	$(LZZ) $< $(CXXFLAGS) -hd -sd -hl -sl -c -DCOMMON_H ;\
+	@echo "Preprocessing $(patsubst %.lzz,%,$<)" ;\
+	$(LZZ) $< $(CZZFLAGS) -hd -sd -hl -sl -c -DCOMMON_H ;\
 	$(PREPEND) $(patsubst %.lzz,%.h,$<) '#include "common_gen.h"'
+	$(LZZINLN) $(patsubst %.lzz,%.h,$<)
+
+%.moc.cpp : %.h
+	moc $< -o $@
 
 %.o : %.cpp
 	$(CXX) -c $< $(CXXFLAGS)
 
 app: $(OBJECTS) main.cpp libgc.a
-	$(CXX) -o $@ main.cpp $(CXXFLAGS) $(OBJECTS) libgc.a
+	$(CXX) -o $@ main.cpp $(CXXFLAGS) $(OBJECTS) libgc.a $(LDFLAGS)
 
 clean:
-	rm -f app *.o $(GENERATED_C) $(GENERATED_H) $(LZZ) libgc.a *.P
+	rm -f app *.o $(GENERATED_C) $(GENERATED_H) $(GENERATED_MOC) $(LZZ) libgc.a *.P

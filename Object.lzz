@@ -1,8 +1,24 @@
-class Object : public gc {
+
+#hdr
+#include <QObject>
+#end
+
+class Object : public QObject, public gc {
+  // crazy hack: LZZ will more-or-less faithfully relay this
+  // pure-virtual declaration into the header file that it
+  // generates. The lzz_inline preprocessor will then run on that
+  // header and transform this into a bare Q_OBJECT so that moc can do
+  // its thing.
+  virtual lzz_inline_Q_OBJECT() = 0;
+
 private:
   int m_a;
 
 public:
+  Q_INVOKABLE Object()
+    : m_a(42)
+  {}
+
   void setA(int a) {
     m_a = a;
   }

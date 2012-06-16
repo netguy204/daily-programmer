@@ -14,6 +14,9 @@ int main(int argc, char ** argv) {
 
   cout << "wrote some stuff " << obj->getA() << endl;
 
+  QObject * newObj = obj->metaObject()->newInstance();
+  cout << newObj->metaObject()->className() << endl;
+
   GC_gcollect();
 
   return 0;
