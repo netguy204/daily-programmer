@@ -8,9 +8,9 @@ GENERATED_MOC = $(patsubst %.lzz,%.moc.cpp,$(SOURCES))
 
 HEADERS = $(GENERATED_H) $(STANDALONE_HEADERS)
 
-LZZFLAGS=-Igc-7.2/include -I/usr/include `pkg-config --cflags QtCore`
+LZZFLAGS=-Igc-7.2/include -I/usr/include `pkg-config --cflags QtGui`
 CXXFLAGS+=$(LZZFLAGS) # -g
-LDFLAGS+=`pkg-config --libs QtCore`
+LDFLAGS+=`pkg-config --libs QtGui`
 
 LZZHOME = lzz_2_8_2_src_gen
 LZZ     = build_tools/lzz
@@ -53,7 +53,7 @@ common_gen.h: common.h predeclares.h
 %.cpp %.h : %.lzz common_gen.h $(LZZ)
 	@echo "Preprocessing $(patsubst %.lzz,%,$<)" ;\
 	$(LZZ) $< $(CZZFLAGS) -hd -sd -hl -sl -c -DCOMMON_H ;\
-	$(PREPEND) $(patsubst %.lzz,%.h,$<) '#include "common_gen.h"'
+	$(PREPEND) $(patsubst %.lzz,%.h,$<) '#include "common_gen.h"' ;\
 	$(LZZINLN) $(patsubst %.lzz,%.h,$<)
 
 %.moc.cpp : %.h

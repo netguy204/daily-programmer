@@ -1,9 +1,13 @@
 
 #hdr
-#include <QObject>
+#include <QTextEdit>
+#include <QPushButton>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QtGui>
 #end
 
-class Object : public QObject, public gc {
+class Object : public QWidget {
   // crazy hack: LZZ will more-or-less faithfully relay this
   // pure-virtual declaration into the header file that it
   // generates. The lzz_inline preprocessor will then run on that
@@ -11,19 +15,30 @@ class Object : public QObject, public gc {
   // its thing.
   virtual lzz_inline_Q_OBJECT() = 0;
 
-private:
-  int m_a;
-
 public:
-  Q_INVOKABLE Object()
-    : m_a(42)
-  {}
+  Object() {
+    textEdit = new QTextEdit();
+    textEdit->setHtml("<h1>Hello world!</h1>Ain't it <i>fancy?</i>");
 
-  void setA(int a) {
-    m_a = a;
+    quitButton = new QPushButton(tr("Quit"));
+    connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(textEdit);
+    layout->addWidget(quitButton);
+    setLayout(layout);
+    setWindowTitle(tr("Object"));
   }
 
-  int getA() {
-    return m_a;
+  // another crazy hack: This transforms into 
+  // private slots:
+  // (behind LZZ's back)
+  virtual lzz_private_slots() = 0;
+  void quit() {
   }
+
+private:
+  QTextEdit *textEdit;
+  QPushButton *quitButton;
+
 };

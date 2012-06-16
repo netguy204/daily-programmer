@@ -17,6 +17,9 @@ my @lines = ();
 open(my $fh, $filename);
 foreach my $line (<$fh>) {
     $line =~ s/virtual lzz_inline_([^\ ]+).*$/$1/;
+    $line =~ s/virtual lzz_private_slots.*$/private slots:/;
+    $line =~ s/virtual lzz_public_slots.*$/public slots:/;
+
     push @lines, $line;
 }
 close($fh);
