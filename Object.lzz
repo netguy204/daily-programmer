@@ -30,10 +30,12 @@ public:
     setWindowTitle(tr("Object"));
   }
 
-  // another crazy hack: This transforms into 
+  // another crazy hack: This transforms into  (behind LZZ's back)
+  //
   // private slots:
-  // (behind LZZ's back)
+  //
   virtual lzz_private_slots() = 0;
+
   void quit() {
   }
 

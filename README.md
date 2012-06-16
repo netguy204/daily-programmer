@@ -17,11 +17,14 @@ thought.
 * Includes the Boehm garbage collector. Your classes can opt-into
   garbage collection by extending the gc class.
 
+* Includes the QT moc compiler in the build chain so that your classes
+  can also opt-in to the meta-object protocol. This gives you much
+  richer run-time type information than you would typically have.
 
 Why is This?
 ============
 
-* Maintaining separate .cpp and .h files is annoying (IMHOP).
+* Maintaining separate .cpp and .h files is annoying (IMO)
 
 * Sometimes having garbage collection enables some very interesting
   design options. Sometimes the stack or reference counting smart

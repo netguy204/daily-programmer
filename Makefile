@@ -1,5 +1,5 @@
 SOURCES = $(wildcard *.lzz)
-STANDALONE_HEADERS = prim_mem.h
+STANDALONE_HEADERS = common.h
 
 OBJECTS = $(patsubst %.lzz,%.o,$(SOURCES)) $(patsubst %.lzz,%.moc.o,$(SOURCES))
 GENERATED_C = $(patsubst %.lzz,%.cpp,$(SOURCES))
@@ -21,7 +21,7 @@ LZZDEPS = build_tools/lzz_deps.pl
 LZZINLN = build_tools/lzz_inline.pl
 LZZPREP = build_tools/lzz_preproc.pl
 
-all: app $(GENERATED_H) $(GENERATED_C) $(GENERATED_MOC)
+all: app $(GENERATED_H) $(GENERATED_C) $(GENERATED_MOC) TAGS
 
 $(LZZ): $(LZZHOME)/lazycpp
 	cp $(LZZHOME)/lazycpp $(LZZ)
@@ -66,4 +66,10 @@ app: $(OBJECTS) main.cpp libgc.a
 	$(CXX) -o $@ main.cpp $(CXXFLAGS) $(OBJECTS) libgc.a $(LDFLAGS)
 
 clean:
-	rm -f app *.o $(GENERATED_C) $(GENERATED_H) $(GENERATED_MOC) $(LZZ) libgc.a *.P
+	rm -f app *.o $(GENERATED_C) $(GENERATED_H) $(GENERATED_MOC) $(LZZ) libgc.a *.P TAGS
+
+QTDIR = $(shell perl build_tools/qt_base.pl)
+
+TAGS: $(SOURCES) $(STANDALONE_HEADERS)
+	etags --append --language=c++ $(STANDALONE_HEADERS) $(SOURCES) `find -L $(QTDIR) -type f -name '*.h'`
+
