@@ -9,4 +9,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <QtGui>
+#include "boost/typeof/typeof.hpp"
+
+#define FOREACH(var, coll) for(BOOST_AUTO(var, coll.begin()); var != coll.end(); ++var)
 #endif
