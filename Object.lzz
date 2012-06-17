@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QtGui>
+
+#include <iostream>
 #end
 
 class Object : public QWidget {
@@ -21,6 +23,7 @@ public:
     textEdit->setHtml("<h1>Hello world!</h1>Ain't it <i>fancy?</i>");
 
     quitButton = new QPushButton(tr("Quit"));
+
     connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
     QVBoxLayout *layout = new QVBoxLayout();
