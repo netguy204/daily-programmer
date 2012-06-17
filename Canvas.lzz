@@ -1,0 +1,61 @@
+
+
+#hdr
+#include <list>
+#end
+
+#src
+#include "Node.h"
+#end
+
+class Canvas : public QWidget {
+  virtual lzz_inline_Q_OBJECT() = 0;
+
+public:
+  Canvas() {
+    m_layout = new QVBoxLayout();
+
+    addNode("Double");
+    addNode("Click");
+
+    setLayout(m_layout);
+  }
+
+  void addNode(std::string text) {
+    Node* node = new Node(text);
+    m_nodes.push_back(node);
+    m_layout->addWidget(node);
+  }
+
+  virtual void mouseDoubleClickEvent(QMouseEvent * event) {
+    addNode(string_format("Double Clicked! %d", m_nodes.size() - 1));
+  }
+
+  virtual void paintEvent(QPaintEvent * event) {
+    QPainterPath path;
+    bool firstLoop = true;
+
+    FOREACH(iter, m_nodes) {
+      int x = (*iter)->center_x();
+      int y = (*iter)->center_y();
+
+      if(firstLoop) {
+        firstLoop = false;
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+
+    QPainter painter(this);
+    painter.drawPath(path);
+
+    QWidget::paintEvent(event);
+  }
+
+private:
+  QVBoxLayout* m_layout;
+
+  std::list<Node*> m_nodes;
+
+};

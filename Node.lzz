@@ -1,0 +1,23 @@
+
+class Node : public QLabel {
+  virtual lzz_inline_Q_OBJECT() = 0;
+
+public:
+  Node(std::string& msg) 
+  {
+    QString str(msg.c_str());
+    setText(str);
+    setFrameStyle(QFrame::Panel | QFrame::Raised);
+    setLineWidth(2);
+    setAutoFillBackground(true);
+  }
+
+  int center_x() {
+    return x() + width() / 2;
+  }
+
+  int center_y() {
+    return y() + height() / 2;
+  }
+
+};

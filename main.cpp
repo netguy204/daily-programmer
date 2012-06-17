@@ -3,7 +3,7 @@
 #include <QtGui>
 #include <iostream>
 
-#include "Object.h"
+#include "Canvas.h"
 
 using namespace std;
 
@@ -12,8 +12,8 @@ int main(int argc, char ** argv) {
   GC_enable_incremental();
 
   QApplication app(argc, argv);
-  Object obj;
-  obj.show();
+  Canvas canvas;
+  canvas.show();
 
   return app.exec();
 }
