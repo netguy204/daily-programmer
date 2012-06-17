@@ -1,0 +1,72 @@
+#hdr
+#include <set>
+#end
+
+#src
+#include "Edge.h"
+#include "Node.h"
+#end
+
+bool NodeComparison(;Node* lhs, Node* rhs) {
+  return std::less<std::string>()(lhs->name(), rhs->name());
+}
+
+class Graph : public gc
+{
+private:
+  std::list<Node*> m_nodes;
+  std::list<Edge*> m_edges;
+
+public:
+  Graph() {}
+
+  Node * addNode(Node * node) {
+    m_nodes.push_back(node);
+    return node;
+  }
+
+  Edge * addEdge(Edge * edge) {
+    m_edges.push_back(edge);
+    return edge;
+  }
+
+  Node * findNode(std::string name) {
+    FOREACH(node, m_nodes) {
+      if((*node)->name() == name) {
+        return *node;
+      }
+    }
+    return NULL;
+  }
+
+  std::list<Edge*> edgesFrom(Node * node) {
+    std::list<Edge*> results;
+
+    FOREACH(edge, m_edges) {
+      if((*edge)->lhs() == node) {
+        results.push_back(*edge);
+      }
+    }
+
+    return results;
+  }
+
+  std::set<Node*, NodeComparison> nodesFrom(Node * node) {
+    std::set<Node*, NodeComparison> result;
+
+    FOREACH(edge, edgesFrom(node)) {
+      result.insert((*edge)->rhs());
+    }
+
+    return result;
+  }
+
+  std::list<Node*>& nodes() {
+    return m_nodes;
+  }
+
+  std::list<Edge*>& edges() {
+    return m_edges;
+  }
+};
+

@@ -1,0 +1,20 @@
+class Edge : public gc
+{
+private:
+  Node* m_lhs;
+  Node* m_rhs;
+
+public:
+  Edge(Node * lhs, Node * rhs)
+    : m_lhs(lhs), m_rhs(rhs)
+  {}
+
+  Node* lhs() {
+    return m_lhs;
+  }
+
+  Node* rhs() {
+    return m_rhs;
+  }
+
+};
